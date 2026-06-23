@@ -76,7 +76,7 @@ export default function ReversalQuiz() {
           detalles: 'Tu perfil metabólico muestra una alta probabilidad de responder a un proceso de reversión al implementar cambios de manera inmediata. Si quieres conocer mi metodología de reversión paso a paso, haz clic en el botón de abajo.',
           acción: 'vsl',
           etiqueta: 'Prospecto_Formulario_VSL',
-          siguientePaso: 'Acceso al programa premium de reversión'
+          siguientePaso: 'Iniciar un proceso de reversión'
         };
       } else {
         return {
@@ -100,7 +100,7 @@ export default function ReversalQuiz() {
           detalles: 'Muchas personas en tu rango logran reducir medicamentos y normalizar sus niveles de glucosa. Mi programa está diseñado específicamente para ti. Haz clic para conocer la metodología completa.',
           acción: 'vsl',
           etiqueta: 'Prospecto_Formulario_VSL',
-          siguientePaso: 'Acceso al programa premium de reversión'
+          siguientePaso: 'Iniciar un proceso de reversión'
         };
       } else {
         return {
