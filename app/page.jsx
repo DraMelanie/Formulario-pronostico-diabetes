@@ -75,7 +75,7 @@ export default function ReversalQuiz() {
           mensaje: 'Tienes excelentes características para revertir tu condición.',
           detalles: 'Tu perfil metabólico muestra una alta probabilidad de responder a un proceso de reversión al implementar cambios de manera inmediata. Si quieres conocer mi metodología de reversión paso a paso, haz clic en el botón de abajo.',
           acción: 'vsl',
-          etiqueta: 'Prospecto_VSL',
+          etiqueta: 'Prospecto_Formulario_VSL',
           siguientePaso: 'Acceso al programa premium de reversión'
         };
       } else {
@@ -85,7 +85,7 @@ export default function ReversalQuiz() {
           mensaje: 'Tienes excelentes características para revertir tu condición.',
           detalles: 'Tu perfil metabólico muestra una alta probabilidad de responder a cambios de manera inmediata. Hemos preparado recursos gratuitos para que comiences tu transformación hoy mismo.',
           acción: 'free',
-          etiqueta: 'Prospecto_Free',
+          etiqueta: 'Prospecto_Formulario_free',
           siguientePaso: 'Ebook gratuito + Training "Domina tu Glucosa" (10 días)'
         };
       }
