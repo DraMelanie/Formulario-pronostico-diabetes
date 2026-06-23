@@ -99,7 +99,7 @@ export default function ReversalQuiz() {
           mensaje: 'Puedes lograr mejoras significativas con acompañamiento especializado.',
           detalles: 'Muchas personas en tu rango logran reducir medicamentos y normalizar sus niveles de glucosa. Mi programa está diseñado específicamente para ti. Haz clic para conocer la metodología completa.',
           acción: 'vsl',
-          etiqueta: 'Prospecto_VSL',
+          etiqueta: 'Prospecto_Formulario_VSL',
           siguientePaso: 'Acceso al programa premium de reversión'
         };
       } else {
@@ -109,7 +109,7 @@ export default function ReversalQuiz() {
           mensaje: 'Puedes lograr mejoras significativas con acompañamiento especializado.',
           detalles: 'Muchas personas en tu rango logran cambios positivos. Comienza con nuestro ebook gratuito y training exclusivo para aprender la metodología que uso con mis pacientes.',
           acción: 'free',
-          etiqueta: 'Prospecto_Free',
+          etiqueta: 'Prospecto_Formulario_free',
           siguientePaso: 'Ebook gratuito + Training "Domina tu Glucosa" (10 días)'
         };
       }
@@ -192,44 +192,44 @@ export default function ReversalQuiz() {
 
   if (resultado) {
     return (
-      <div style={{ padding: '2rem 1rem', maxWidth: '640px', margin: '0 auto' }}>
+      <div style={{ padding: '2rem 1.5rem', maxWidth: '640px', margin: '0 auto', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '28px', fontWeight: 500, marginBottom: '0.5rem', color: '#333' }}>
+          <h1 style={{ fontSize: '28px', fontWeight: 600, marginBottom: '0.75rem', color: '#333', lineHeight: 1.3 }}>
             Tu Pronóstico
           </h1>
-          <p style={{ color: '#999', fontSize: '14px' }}>
+          <p style={{ color: '#666', fontSize: '15px', margin: 0 }}>
             Análisis completado y guardado en nuestro sistema
           </p>
         </div>
 
         <div style={{
-          background: resultado.acción === 'vsl' || resultado.acción === 'free' ? 'rgba(45, 127, 94, 0.08)' : 'rgba(216, 90, 48, 0.08)',
-          border: resultado.acción === 'vsl' || resultado.acción === 'free' ? '1px solid rgba(45, 127, 94, 0.3)' : '1px solid rgba(216, 90, 48, 0.3)',
-          borderRadius: '12px',
-          padding: '2rem 1.5rem',
+          background: resultado.acción === 'vsl' || resultado.acción === 'free' ? 'rgba(61, 109, 63, 0.08)' : 'rgba(216, 90, 48, 0.08)',
+          border: resultado.acción === 'vsl' || resultado.acción === 'free' ? '2px solid #3d6d3f' : '2px solid #D85A30',
+          borderRadius: '16px',
+          padding: '2.5rem 1.5rem',
           textAlign: 'center',
           marginBottom: '2rem'
         }}>
-          <div style={{ fontSize: '56px', fontWeight: 500, marginBottom: '0.5rem', color: '#333' }}>
+          <div style={{ fontSize: '64px', fontWeight: 600, marginBottom: '1rem', color: '#333' }}>
             {resultado.score}
-            <span style={{ fontSize: '24px', color: '#999', marginLeft: '0.5rem' }}>/18</span>
+            <span style={{ fontSize: '28px', color: '#999', marginLeft: '0.5rem' }}>/18</span>
           </div>
-          <h2 style={{ fontSize: '20px', fontWeight: 500, marginBottom: '1rem', color: '#333', margin: '1rem 0 0 0' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 600, marginBottom: '1.5rem', color: '#333', margin: 0, marginTop: '1rem', lineHeight: 1.3 }}>
             {resultado.categoría}
           </h2>
-          <p style={{ color: '#333', fontSize: '15px', lineHeight: 1.6, margin: '1rem 0 0 0' }}>
+          <p style={{ color: '#333', fontSize: '16px', lineHeight: 1.7, margin: '1rem 0 0 0', fontWeight: 500 }}>
             {resultado.mensaje}
           </p>
-          <p style={{ color: '#999', fontSize: '14px', lineHeight: 1.6, margin: '0.75rem 0 0 0' }}>
+          <p style={{ color: '#666', fontSize: '15px', lineHeight: 1.7, margin: '1rem 0 0 0' }}>
             {resultado.detalles}
           </p>
         </div>
 
-        <div style={{ background: '#f3f3f3', padding: '1.5rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
-          <p style={{ color: '#666', fontSize: '12px', fontWeight: 500, margin: '0 0 0.75rem 0', textTransform: 'uppercase' }}>
+        <div style={{ background: '#f8f8f8', padding: '1.75rem', borderRadius: '12px', marginBottom: '2rem' }}>
+          <p style={{ color: '#666', fontSize: '12px', fontWeight: 600, margin: '0 0 0.75rem 0', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             Tu próximo paso
           </p>
-          <p style={{ color: '#333', fontSize: '16px', fontWeight: 500, margin: 0 }}>
+          <p style={{ color: '#333', fontSize: '17px', fontWeight: 600, margin: 0, lineHeight: 1.3 }}>
             {resultado.siguientePaso}
           </p>
         </div>
@@ -238,20 +238,21 @@ export default function ReversalQuiz() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <a href="https://www.somosplantpowered.com/vsl-piad" style={{
               display: 'block',
-              background: '#378ADD',
+              background: '#3d6d3f',
               color: 'white',
-              padding: '16px 24px',
-              borderRadius: '8px',
+              padding: '18px 24px',
+              borderRadius: '10px',
               textDecoration: 'none',
-              fontWeight: 500,
-              fontSize: '15px',
+              fontWeight: 600,
+              fontSize: '16px',
               textAlign: 'center',
               border: 'none',
-              cursor: 'pointer'
-            }}>
+              cursor: 'pointer',
+              transition: 'all 0.3s'
+            }} onMouseOver={(e) => e.target.style.background = '#2d5a30'} onMouseOut={(e) => e.target.style.background = '#3d6d3f'}>
               Ver Metodología de Reversión →
             </a>
-            <p style={{ color: '#999', fontSize: '13px', textAlign: 'center', margin: 0 }}>
+            <p style={{ color: '#999', fontSize: '14px', textAlign: 'center', margin: 0 }}>
               Recibirás un email con todos los detalles
             </p>
           </div>
@@ -260,26 +261,27 @@ export default function ReversalQuiz() {
         {resultado.acción === 'free' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <button style={{
-              background: '#378ADD',
+              background: '#3d6d3f',
               color: 'white',
-              padding: '16px 24px',
-              borderRadius: '8px',
+              padding: '18px 24px',
+              borderRadius: '10px',
               border: 'none',
               cursor: 'pointer',
-              fontWeight: 500,
-              fontSize: '15px'
-            }}>
+              fontWeight: 600,
+              fontSize: '16px',
+              transition: 'all 0.3s'
+            }} onMouseOver={(e) => e.target.style.background = '#2d5a30'} onMouseOut={(e) => e.target.style.background = '#3d6d3f'}>
               Descargar Ebook Gratuito →
             </button>
-            <p style={{ color: '#999', fontSize: '13px', textAlign: 'center', margin: 0 }}>
+            <p style={{ color: '#999', fontSize: '14px', textAlign: 'center', margin: 0 }}>
               + Acceso al training "Domina tu Glucosa" (10 días)
             </p>
           </div>
         )}
 
         {resultado.acción === 'medical' && (
-          <div style={{ background: 'rgba(216, 90, 48, 0.08)', border: '1px solid rgba(216, 90, 48, 0.3)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
-            <p style={{ color: '#333', fontSize: '14px', lineHeight: 1.6, margin: 0 }}>
+          <div style={{ background: 'rgba(216, 90, 48, 0.08)', border: '2px solid #D85A30', padding: '1.75rem', borderRadius: '12px', textAlign: 'center' }}>
+            <p style={{ color: '#333', fontSize: '16px', lineHeight: 1.7, margin: 0, fontWeight: 500 }}>
               <strong>Te recomendamos trabajar con un médico especialista y nutricionista</strong> para un seguimiento cercano y personalizado.
             </p>
           </div>
@@ -402,76 +404,138 @@ export default function ReversalQuiz() {
   const progress = Math.round((step / steps.length) * 100);
 
   return (
-    <div style={{ padding: '1.5rem', maxWidth: '640px', margin: '0 auto', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      <div style={{ marginBottom: '2rem' }}>
-        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <h1 style={{ fontSize: '28px', fontWeight: 500, marginBottom: '0.75rem', color: '#333' }}>
+    <div style={{ 
+      padding: '1.5rem', 
+      maxWidth: '640px', 
+      margin: '0 auto', 
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      backgroundColor: '#ffffff',
+      minHeight: '100vh'
+    }}>
+      <div style={{ marginBottom: '2.5rem' }}>
+        {/* Logo */}
+        <div style={{ textAlign: 'center', marginBottom: '2rem', paddingTop: '1rem' }}>
+          <img 
+            src="https://cdn.jsdelivr.net/gh/DraMelanie/Formulario-pronostico-diabetes@main/public/logo.png" 
+            alt="Somos Plant Powered" 
+            style={{ height: '60px', objectFit: 'contain', marginBottom: '1.5rem' }}
+          />
+        </div>
+
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 600, marginBottom: '1rem', color: '#333', lineHeight: 1.3 }}>
             Calcula tu pronóstico de reversión
           </h1>
-          <p style={{ fontSize: '15px', color: '#666', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '16px', color: '#666', lineHeight: 1.7, margin: 0 }}>
             Responde este breve formulario y descubre qué tan cerca podrías estar de revertir tu resistencia a la insulina, prediabetes o diabetes tipo 2.
           </p>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 500, margin: 0, color: '#333' }}>
+        {/* Step Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 600, margin: 0, color: '#333', flex: 1, lineHeight: 1.3 }}>
             {currentStep.title}
           </h2>
-          <span style={{ fontSize: '13px', color: '#999' }}>
-            {step + 1} de {steps.length}
+          <span style={{ fontSize: '14px', color: '#999', whiteSpace: 'nowrap', marginLeft: '1rem' }}>
+            {step + 1}/{steps.length}
           </span>
         </div>
-        <div style={{ height: '6px', background: '#eee', borderRadius: '3px', overflow: 'hidden' }}>
-          <div style={{ height: '100%', background: '#378ADD', width: `${progress}%`, transition: 'width 0.3s ease' }}></div>
+
+        {/* Progress Bar */}
+        <div style={{ height: '8px', background: '#f0f0f0', borderRadius: '4px', overflow: 'hidden', marginBottom: '2rem' }}>
+          <div style={{ 
+            height: '100%', 
+            background: '#3d6d3f', 
+            width: `${progress}%`, 
+            transition: 'width 0.3s ease'
+          }}></div>
         </div>
       </div>
 
+      {/* Form Content */}
       <div style={{ marginBottom: '2rem' }}>
         {step === 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <input
               type="text"
               placeholder="Tu nombre completo"
               value={formData.nombre}
               onChange={(e) => updateForm('nombre', e.target.value)}
-              style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px' }}
+              style={{ 
+                padding: '16px 14px', 
+                borderRadius: '10px', 
+                border: '2px solid #ddd', 
+                fontSize: '16px',
+                fontFamily: 'inherit',
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
+              onBlur={(e) => e.target.style.borderColor = '#ddd'}
             />
             <input
               type="email"
               placeholder="Tu correo"
               value={formData.correo}
               onChange={(e) => updateForm('correo', e.target.value)}
-              style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px' }}
+              style={{ 
+                padding: '16px 14px', 
+                borderRadius: '10px', 
+                border: '2px solid #ddd', 
+                fontSize: '16px',
+                fontFamily: 'inherit',
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
+              onBlur={(e) => e.target.style.borderColor = '#ddd'}
             />
             <input
               type="text"
               placeholder="Tu usuario de Instagram (sin @)"
               value={formData.instagram}
               onChange={(e) => updateForm('instagram', e.target.value)}
-              style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px' }}
+              style={{ 
+                padding: '16px 14px', 
+                borderRadius: '10px', 
+                border: '2px solid #ddd', 
+                fontSize: '16px',
+                fontFamily: 'inherit',
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
+              onBlur={(e) => e.target.style.borderColor = '#ddd'}
             />
             <input
               type="text"
               placeholder="País de residencia"
               value={formData.país}
               onChange={(e) => updateForm('país', e.target.value)}
-              style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px' }}
+              style={{ 
+                padding: '16px 14px', 
+                borderRadius: '10px', 
+                border: '2px solid #ddd', 
+                fontSize: '16px',
+                fontFamily: 'inherit',
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
+              onBlur={(e) => e.target.style.borderColor = '#ddd'}
             />
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             {currentStep.options?.map((option) => (
               <label
                 key={option.value}
                 style={{
-                  padding: '14px 16px',
-                  border: formData[currentStep.field] === option.value ? '2px solid #378ADD' : '1px solid #ddd',
-                  borderRadius: '8px',
+                  padding: '16px 16px',
+                  border: formData[currentStep.field] === option.value ? '2px solid #3d6d3f' : '2px solid #e0e0e0',
+                  borderRadius: '10px',
                   cursor: 'pointer',
                   display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  background: formData[currentStep.field] === option.value ? '#f0f8ff' : 'transparent',
+                  alignItems: 'flex-start',
+                  gap: '14px',
+                  background: formData[currentStep.field] === option.value ? 'rgba(61, 109, 63, 0.05)' : '#ffffff',
                   transition: 'all 0.2s'
                 }}
               >
@@ -481,9 +545,9 @@ export default function ReversalQuiz() {
                   value={option.value}
                   checked={formData[currentStep.field] === option.value}
                   onChange={() => updateForm(currentStep.field, option.value)}
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: 'pointer', marginTop: '4px', width: '20px', height: '20px' }}
                 />
-                <span style={{ color: '#333', fontSize: '14px' }}>
+                <span style={{ color: '#333', fontSize: '16px', fontWeight: 500, lineHeight: 1.4 }}>
                   {option.label}
                 </span>
               </label>
@@ -492,22 +556,26 @@ export default function ReversalQuiz() {
         )}
       </div>
 
+      {/* Buttons */}
       <div style={{ display: 'flex', gap: '12px', justifyContent: 'space-between' }}>
         <button
           onClick={handlePrev}
           disabled={step === 0}
           style={{
-            padding: '12px 24px',
-            border: '1px solid #ddd',
-            background: step === 0 ? '#f0f0f0' : 'white',
+            padding: '16px 20px',
+            border: '2px solid #ddd',
+            background: step === 0 ? '#f5f5f5' : '#ffffff',
             color: '#333',
-            borderRadius: '8px',
+            borderRadius: '10px',
             cursor: step === 0 ? 'not-allowed' : 'pointer',
             opacity: step === 0 ? 0.5 : 1,
-            fontSize: '14px',
-            fontWeight: 500,
-            transition: 'all 0.2s'
+            fontSize: '16px',
+            fontWeight: 600,
+            transition: 'all 0.2s',
+            flex: 1
           }}
+          onMouseOver={(e) => !step === 0 && (e.target.style.background = '#f8f8f8')}
+          onMouseOut={(e) => e.target.style.background = step === 0 ? '#f5f5f5' : '#ffffff'}
         >
           Atrás
         </button>
@@ -515,17 +583,20 @@ export default function ReversalQuiz() {
           onClick={handleNext}
           disabled={loading || (step === 0 && (!formData.nombre || !formData.correo)) || (step > 0 && !formData[currentStep?.field])}
           style={{
-            padding: '12px 24px',
+            padding: '16px 20px',
             border: 'none',
-            background: '#378ADD',
+            background: '#3d6d3f',
             color: 'white',
-            borderRadius: '8px',
+            borderRadius: '10px',
             cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: 500,
-            opacity: (loading || (step === 0 && (!formData.nombre || !formData.correo)) || (step > 0 && !formData[currentStep?.field])) ? 0.5 : 1,
-            transition: 'all 0.2s'
+            fontSize: '16px',
+            fontWeight: 600,
+            opacity: (loading || (step === 0 && (!formData.nombre || !formData.correo)) || (step > 0 && !formData[currentStep?.field])) ? 0.6 : 1,
+            transition: 'all 0.2s',
+            flex: 1
           }}
+          onMouseOver={(e) => !loading && (e.target.style.background = '#2d5a30')}
+          onMouseOut={(e) => e.target.style.background = '#3d6d3f'}
         >
           {loading ? 'Procesando...' : step === steps.length - 1 ? 'Ver Resultado' : 'Siguiente'}
         </button>
