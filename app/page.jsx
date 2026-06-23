@@ -146,7 +146,7 @@ export default function ReversalQuiz() {
           presupuesto: formData.presupuesto,
           timestamp: new Date().toISOString()
         },
-        tags: segmento.etiqueta ? [segmento.etiqueta] : []
+        tags: segmento.etiqueta ? segmento.etiqueta : ""
       };
 
       const response = await fetch('https://systeme.io/api/v1/contacts', {
