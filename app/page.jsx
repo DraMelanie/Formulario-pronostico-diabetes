@@ -416,7 +416,7 @@ export default function ReversalQuiz() {
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '2rem', paddingTop: '1rem' }}>
           <img 
-            src="https://cdn.jsdelivr.net/gh/DraMelanie/Formulario-pronostico-diabetes@main/public/logo.png" 
+            src="https://i.imgur.com/JQFiMig.png"
             alt="Somos Plant Powered" 
             style={{ height: '60px', objectFit: 'contain', marginBottom: '1.5rem' }}
           />
