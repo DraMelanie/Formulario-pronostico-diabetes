@@ -252,10 +252,127 @@ const handleNext = async () => {
             {step === 2 && '¿Cuál es tu diagnóstico?'}
             {step === 3 && '¿Cuánto tiempo llevas con este diagnóstico?'}
             {step === 4 && '¿Cuál es tu HbA1c?'}
-            {step === 5 && '¿Qué medicamentos tomas?'}
-            {step === 6 && '¿Cómo te sientes emocionalmente?'}
-            {step === 7 && '¿Qué te preocupa más?'}
-            {step === 8 && '¿Cuál es tu objetivo principal?'}
+            {step === 5 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: 'Ninguno', label: 'Ningún medicamento' },
+                { val: '1oral', label: '1 medicamento oral' },
+                { val: '2+orales', label: '2 o más medicamentos orales' },
+                { val: 'Orales+Insulina', label: 'Medicamento(s) orales + insulina inyectada' },
+                { val: 'Insulina', label: 'Insulina inyectada' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('medicamentos', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.medicamentos === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.medicamentos === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.medicamentos === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 6 &&
+            {step === 6 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: 'Tranquilo', label: 'Tranquilo(a), pero quiero prevenir problemas futuros' },
+                { val: 'Preocupado', label: 'Preocupado(a), siento que necesito actuar pronto' },
+                { val: 'Frustrado', label: 'Frustrado(a), he intentado muchas cosas sin éxito' },
+                { val: 'Abrumado', label: 'Abrumado(a), siento que estoy perdiendo el control de mi salud' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('emoción', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.emoción === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.emoción === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.emoción === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 7 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: 'Medicamentos', label: 'Seguir aumentando medicamentos' },
+                { val: 'Insulina', label: 'Tener que usar insulina' },
+                { val: 'Complicaciones', label: 'Desarrollar complicaciones de la enfermedad' },
+                { val: 'CalidadVida', label: 'Perder calidad de vida' },
+                { val: 'Familia', label: 'No poder disfrutar plenamente de mi familia y mi futuro' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('preocupación', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.preocupación === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.preocupación === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.preocupación === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 8 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: 'ReducirMedicamentos', label: 'Reducir medicamentos' },
+                { val: 'BajarGlucosa', label: 'Bajar mi glucosa' },
+                { val: 'MasEnergia', label: 'Tener más energía' },
+                { val: 'PesoPerder', label: 'Perder peso' },
+                { val: 'RevertirCondicion', label: 'Revertir mi condición' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('objetivo', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.objetivo === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.objetivo === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.objetivo === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 9 &&
             {step === 9 && '¿Qué tan listo/a estás?'}
             {step === 10 && '¿Cuál es tu capacidad de inversión?'}
           </h2>
