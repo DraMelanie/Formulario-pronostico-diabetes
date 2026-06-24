@@ -188,7 +188,7 @@ export default function ReversalQuiz() {
             </p>
           </div>
           {resultado.ctaUrl && (
-            
+            <a
               href={resultado.ctaUrl}
               style={{
                 display: 'inline-block',
