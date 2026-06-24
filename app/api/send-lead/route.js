@@ -30,9 +30,12 @@ export async function POST(request) {
       body: JSON.stringify(payload)
     });
 
+    const responseText = await response.text();
+    console.log('Systeme.io response:', response.status, responseText);
+
     return Response.json({ success: true });
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error en route:', error);
     return Response.json({ success: true });
   }
 }
