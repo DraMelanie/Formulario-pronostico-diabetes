@@ -509,6 +509,22 @@ export default function ReversalQuiz() {
             />
             <input
               type="text"
+              <input
+  type="text"
+  placeholder="WhatsApp (+código país y número)"
+  value={formData.whatsapp}
+  onChange={(e) => updateForm('whatsapp', e.target.value)}
+  style={{ 
+    padding: '16px 14px', 
+    borderRadius: '10px', 
+    border: '2px solid #ddd', 
+    fontSize: '16px',
+    fontFamily: 'inherit',
+    transition: 'border-color 0.2s'
+  }}
+  onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
+  onBlur={(e) => e.target.style.borderColor = '#ddd'}
+/>
               placeholder="País de residencia"
               value={formData.país}
               onChange={(e) => updateForm('país', e.target.value)}
