@@ -131,40 +131,30 @@ export default function ReversalQuiz() {
       const segmento = getSegmento();
 
       const payload = {
-        email: formData.correo,
-        firstName: formData.nombre.split(' ')[0] || 'Lead',
-        lastName: formData.nombre.split(' ').slice(1).join(' ') || '',
-        phone: '',
-        custom_fields: {
-          instagram: formData.instagram,
-          país: formData.país,
-          edad: formData.edad,
-          diagnóstico: formData.diagnóstico,
-          score_reversión: String(segmento.score),
-          categoría: segmento.categoría,
-          emoción_actual: formData.emoción,
-          presupuesto: formData.presupuesto,
-          timestamp: new Date().toISOString()
-        },
-        tags: segmento.etiqueta ? segmento.etiqueta : ""
+        correo: formData.correo,
+        nombre: formData.nombre,
+        instagram: formData.instagram,
+        país: formData.país,
+        edad: formData.edad,
+        diagnóstico: formData.diagnóstico,
+        score: segmento.score,
+        categoría: segmento.categoría,
+        emoción: formData.emoción,
+        presupuesto: formData.presupuesto,
+        etiqueta: segmento.etiqueta
       };
 
-      const response = await fetch('https://systeme.io/api/v1/contacts', {
+      const response = await fetch('/api/send-lead', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer xu6nsy7sfz9qzzrxjbrc00xe306rgb3p0x63b6geqtokeyfv9s6g9m6a9k6tzw0s`
         },
         body: JSON.stringify(payload)
       });
 
-      if (!response.ok) {
-        console.warn('API Response:', response.status);
-      }
-
       return true;
     } catch (error) {
-      console.error('Error enviando a Systeme.io:', error);
+      console.error('Error:', error);
       return true;
     }
   };
@@ -416,7 +406,7 @@ export default function ReversalQuiz() {
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '2rem', paddingTop: '1rem' }}>
           <img 
-            src="https://i.imgur.com/JQFiMig.png"
+            src="https://i.imgur.com/JQFiMig.png" 
             alt="Somos Plant Powered" 
             style={{ height: '60px', objectFit: 'contain', marginBottom: '1.5rem' }}
           />
