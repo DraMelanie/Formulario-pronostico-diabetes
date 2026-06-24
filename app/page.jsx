@@ -21,146 +21,141 @@ export default function ReversalQuiz() {
     compromiso: null,
     presupuesto: null
   });
+
   const [loading, setLoading] = useState(false);
   const [resultado, setResultado] = useState(null);
 
-  const puntajes = {
-    edad: { '<40': 2, '40-55': 2, '56-70': 1, '>70': 0 },
-    diagnóstico: { 'Resistencia': 4, 'Prediabetes': 4, 'Diabetes2': 3, 'NoSeguro': 1 },
-    tiempodiagnóstico: { '<1': 4, '1-5': 4, '>5': 3, 'NoConfirmado': 2 },
-    hba1c: { '<5.7': 4, '5.7-6.4': 3, '6.5-7.0': 2, '>7.0': 0, 'NoSé': 1 },
-    medicamentos: { 'Ninguno': 4, '1Oral': 3, '2Orales': 2, 'Insulina': 'exclusion' },
-    compromiso: { 'Listo': 4, 'Dudas': 2, 'Explorando': 0 }
+  const updateForm = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const calcularScore = useCallback(() => {
+  const calculateScore = useCallback(() => {
     let score = 0;
-    let exclusion = false;
 
-    if (formData.medicamentos === 'Insulina') {
-      exclusion = true;
-    }
+    if (formData.edad === '<40') score += 2;
+    else if (formData.edad === '40-55') score += 2;
+    else if (formData.edad === '56-70') score += 1;
+    else if (formData.edad === '>70') score += 0;
 
-    if (!exclusion) {
-      score += puntajes.edad[formData.edad] || 0;
-      score += puntajes.diagnóstico[formData.diagnóstico] || 0;
-      score += puntajes.tiempodiagnóstico[formData.tiempodiagnóstico] || 0;
-      score += puntajes.hba1c[formData.hba1c] || 0;
-      score += puntajes.medicamentos[formData.medicamentos] || 0;
-    }
+    if (formData.diagnóstico === 'Resistencia') score += 4;
+    else if (formData.diagnóstico === 'Prediabetes') score += 4;
+    else if (formData.diagnóstico === 'Diabetes2') score += 3;
+    else if (formData.diagnóstico === 'NoSeguro') score += 1;
 
-    return { score, exclusion };
+    if (formData.tiempodiagnóstico === '<1año') score += 4;
+    else if (formData.tiempodiagnóstico === '1-5años') score += 4;
+    else if (formData.tiempodiagnóstico === '>5años') score += 3;
+    else if (formData.tiempodiagnóstico === 'NoConfirmado') score += 2;
+
+    if (formData.hba1c === '<5.7') score += 4;
+    else if (formData.hba1c === '5.7-6.4') score += 3;
+    else if (formData.hba1c === '6.5-7.0') score += 2;
+    else if (formData.hba1c === '>7.0') score += 0;
+    else if (formData.hba1c === 'NoSé') score += 1;
+
+    if (formData.medicamentos === 'Ninguno') score += 4;
+    else if (formData.medicamentos === '1oral') score += 3;
+    else if (formData.medicamentos === '2+orales') score += 2;
+    else if (formData.medicamentos === 'Insulina') score = -1;
+
+    if (formData.compromiso === 'Listo') score += 4;
+    else if (formData.compromiso === 'Dudas') score += 2;
+    else if (formData.compromiso === 'Explorando') score += 0;
+
+    return score;
   }, [formData]);
 
   const getSegmento = useCallback(() => {
-    const { score, exclusion } = calcularScore();
-    const tieneAltaInversión = formData.presupuesto && formData.presupuesto !== 'NoPodría';
+    const score = calculateScore();
 
-    if (exclusion) {
+    if (formData.medicamentos === 'Insulina') {
       return {
-        categoría: 'RIESGO METABÓLICO ELEVADO',
-        score: score,
-        mensaje: 'Tu prioridad debe ser optimizar el control metabólico y prevenir complicaciones.',
-        detalles: 'Aunque la reversión completa no es el objetivo principal en este momento, puedes mejorar significativamente tu calidad de vida. Te recomiendo trabajar con un médico especialista y nutricionista para un seguimiento cercano y personalizado.',
-        acción: 'medical',
+        score: 'Insulina',
+        categoría: 'Riesgo Metabólico Elevado',
         etiqueta: null,
-        siguientePaso: 'Seguimiento médico y nutricional especializado'
+        mensaje: '🚨 RIESGO METABÓLICO ELEVADO',
+        detalle: 'Recomendamos seguimiento médico y nutricional especializado.',
+        cta: 'Seguimiento médico',
+        ctaUrl: null
       };
     }
 
     if (score >= 15) {
-      if (tieneAltaInversión) {
+      if (formData.presupuesto && formData.presupuesto !== 'NoPodría') {
         return {
-          categoría: '🔥 ALTO PRONÓSTICO DE REVERSIÓN',
           score: score,
-          mensaje: 'Tienes excelentes características para revertir tu condición.',
-          detalles: 'Tu perfil metabólico muestra una alta probabilidad de responder a un proceso de reversión al implementar cambios de manera inmediata. Si quieres conocer mi metodología de reversión paso a paso, haz clic en el botón de abajo.',
-          acción: 'vsl',
+          categoría: 'Alto Pronóstico',
           etiqueta: 'Prospecto_Formulario_VSL',
-          siguientePaso: 'Iniciar un proceso de reversión'
+          mensaje: '🔥 ALTO PRONÓSTICO DE REVERSIÓN',
+          detalle: 'Tu perfil indica excelente potencial para revertir tu resistencia a insulina.',
+          cta: 'Ver Metodología de Reversión',
+          ctaUrl: 'https://www.somosplantpowered.com/vsl-piad'
         };
       } else {
         return {
-          categoría: '🔥 ALTO PRONÓSTICO DE REVERSIÓN',
           score: score,
-          mensaje: 'Tienes excelentes características para revertir tu condición.',
-          detalles: 'Tu perfil metabólico muestra una alta probabilidad de responder a cambios de manera inmediata. Hemos preparado recursos gratuitos para que comiences tu transformación hoy mismo.',
-          acción: 'free',
+          categoría: 'Alto Pronóstico',
           etiqueta: 'Prospecto_Formulario_free',
-          siguientePaso: 'Ebook gratuito + Training "Domina tu Glucosa" (10 días)'
+          mensaje: '🔥 ALTO PRONÓSTICO DE REVERSIÓN',
+          detalle: 'Tu perfil indica excelente potencial. Obtén nuestro ebook gratuito.',
+          cta: 'Descargar Ebook Gratuito',
+          ctaUrl: '#'
         };
       }
-    }
-
-    if (score >= 10) {
-      if (tieneAltaInversión) {
+    } else if (score >= 10 && score < 15) {
+      if (formData.presupuesto && formData.presupuesto !== 'NoPodría') {
         return {
-          categoría: '⚠️ PRONÓSTICO INTERMEDIO DE REVERSIÓN',
           score: score,
-          mensaje: 'Puedes lograr mejoras significativas con acompañamiento especializado.',
-          detalles: 'Muchas personas en tu rango logran reducir medicamentos y normalizar sus niveles de glucosa. Mi programa está diseñado específicamente para ti. Haz clic para conocer la metodología completa.',
-          acción: 'vsl',
+          categoría: 'Pronóstico Intermedio',
           etiqueta: 'Prospecto_Formulario_VSL',
-          siguientePaso: 'Iniciar un proceso de reversión'
+          mensaje: '⚠️ PRONÓSTICO INTERMEDIO',
+          detalle: 'Tu perfil muestra potencial moderado. Podemos ayudarte a mejorarlo.',
+          cta: 'Ver Metodología de Reversión',
+          ctaUrl: 'https://www.somosplantpowered.com/vsl-piad'
         };
       } else {
         return {
-          categoría: '⚠️ PRONÓSTICO INTERMEDIO DE REVERSIÓN',
           score: score,
-          mensaje: 'Puedes lograr mejoras significativas con acompañamiento especializado.',
-          detalles: 'Muchas personas en tu rango logran cambios positivos. Comienza con nuestro ebook gratuito y training exclusivo para aprender la metodología que uso con mis pacientes.',
-          acción: 'free',
+          categoría: 'Pronóstico Intermedio',
           etiqueta: 'Prospecto_Formulario_free',
-          siguientePaso: 'Ebook gratuito + Training "Domina tu Glucosa" (10 días)'
+          mensaje: '⚠️ PRONÓSTICO INTERMEDIO',
+          detalle: 'Tu perfil muestra potencial moderado. Accede a nuestro ebook.',
+          cta: 'Ebook Gratuito + Training',
+          ctaUrl: '#'
         };
       }
+    } else {
+      return {
+        score: score,
+        categoría: 'Riesgo Metabólico Elevado',
+        etiqueta: null,
+        mensaje: '🚨 RIESGO METABÓLICO ELEVADO',
+        detalle: 'Recomendamos seguimiento médico y nutricional especializado.',
+        cta: 'Seguimiento médico',
+        ctaUrl: null
+      };
     }
-
-    return {
-      categoría: '🚨 RIESGO METABÓLICO ELEVADO',
-      score: score,
-      mensaje: 'Tu prioridad debe ser optimizar el control metabólico y prevenir complicaciones.',
-      detalles: 'Aunque la reversión completa no es el objetivo principal en este momento, puedes mejorar significativamente tu calidad de vida. Te recomiendo trabajar con un médico especialista y nutricionista para un seguimiento cercano y personalizado.',
-      acción: 'medical',
-      etiqueta: null,
-      siguientePaso: 'Seguimiento médico y nutricional especializado'
-    };
-  }, [formData, calcularScore]);
+  }, [formData.medicamentos, formData.presupuesto, calculateScore]);
 
   const enviarASysteme = async () => {
-  try {
-    const segmento = getSegmento();
+    try {
+      const segmento = getSegmento();
 
-    const payload = {
-      nombre: formData.nombre,
-      correo: formData.correo,
-      whatsapp: formData.whatsapp,
-      instagram: formData.instagram,
-      país: formData.país,
-      score: segmento.score,
-      categoría: segmento.categoría,
-      etiqueta: segmento.etiqueta,
-      emoción: formData.emoción,
-      presupuesto: formData.presupuesto
-    };
+      const payload = {
+        nombre: formData.nombre,
+        correo: formData.correo,
+        whatsapp: formData.whatsapp,
+        instagram: formData.instagram,
+        país: formData.país,
+        score: segmento.score,
+        categoría: segmento.categoría,
+        etiqueta: segmento.etiqueta,
+        emoción: formData.emoción,
+        presupuesto: formData.presupuesto
+      };
 
-    const response = await fetch('https://script.google.com/macros/s/AKfycbyKqMdOp87yjc1ORqopG-o2U60VDbyVbqnIUjV8tmOZKHZziILdUaZuKk9YD7xsxcHZGQ/exec', {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
-
-    return true;
-  } catch (error) {
-    console.error('Error:', error);
-    return true;
-  }
-};
-
-      const response = await fetch('/api/send-lead', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbyKqMdOp87yjc1ORqopG-o2U60VDbyVbqnIUjV8tmOZKHZziILdUaZuKk9YD7xsxcHZGQ/exec', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(payload)
       });
 
@@ -175,10 +170,9 @@ export default function ReversalQuiz() {
     if (step === 10) {
       setLoading(true);
       await enviarASysteme();
-      setLoading(false);
-
       const segmento = getSegmento();
       setResultado(segmento);
+      setLoading(false);
     } else {
       setStep(step + 1);
     }
@@ -187,437 +181,411 @@ export default function ReversalQuiz() {
   const handlePrev = () => {
     if (step > 0) setStep(step - 1);
   };
-
-  const updateForm = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
   if (resultado) {
     return (
-      <div style={{ padding: '2rem 1.5rem', maxWidth: '640px', margin: '0 auto', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '28px', fontWeight: 600, marginBottom: '0.75rem', color: '#333', lineHeight: 1.3 }}>
-            Tu Pronóstico
-          </h1>
-          <p style={{ color: '#666', fontSize: '15px', margin: 0 }}>
-            Análisis completado y guardado en nuestro sistema
-          </p>
-        </div>
-
-        <div style={{
-          background: resultado.acción === 'vsl' || resultado.acción === 'free' ? 'rgba(61, 109, 63, 0.08)' : 'rgba(216, 90, 48, 0.08)',
-          border: resultado.acción === 'vsl' || resultado.acción === 'free' ? '2px solid #3d6d3f' : '2px solid #D85A30',
-          borderRadius: '16px',
-          padding: '2.5rem 1.5rem',
-          textAlign: 'center',
-          marginBottom: '2rem'
-        }}>
-          <div style={{ fontSize: '64px', fontWeight: 600, marginBottom: '1rem', color: '#333' }}>
-            {resultado.score}
-            <span style={{ fontSize: '28px', color: '#999', marginLeft: '0.5rem' }}>/18</span>
-          </div>
-          <h2 style={{ fontSize: '22px', fontWeight: 600, marginBottom: '1.5rem', color: '#333', margin: 0, marginTop: '1rem', lineHeight: 1.3 }}>
-            {resultado.categoría}
-          </h2>
-          <p style={{ color: '#333', fontSize: '16px', lineHeight: 1.7, margin: '1rem 0 0 0', fontWeight: 500 }}>
+      <div style={{ minHeight: '100vh', background: '#f9f9f9', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+        <div style={{ maxWidth: '600px', width: '100%', background: 'white', borderRadius: '20px', padding: '40px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', textAlign: 'center' }}>
+          <img src="https://i.imgur.com/JQFiMig.png" alt="Somos Plant Powered" style={{ maxWidth: '200px', marginBottom: '30px' }} />
+          
+          <h1 style={{ fontSize: '28px', color: '#1a1a1a', marginBottom: '20px' }}>
             {resultado.mensaje}
+          </h1>
+          
+          <p style={{ fontSize: '16px', color: '#666', marginBottom: '30px', lineHeight: '1.6' }}>
+            {resultado.detalle}
           </p>
-          <p style={{ color: '#666', fontSize: '15px', lineHeight: 1.7, margin: '1rem 0 0 0' }}>
-            {resultado.detalles}
-          </p>
-        </div>
 
-        <div style={{ background: '#f8f8f8', padding: '1.75rem', borderRadius: '12px', marginBottom: '2rem' }}>
-          <p style={{ color: '#666', fontSize: '12px', fontWeight: 600, margin: '0 0 0.75rem 0', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Tu próximo paso
-          </p>
-          <p style={{ color: '#333', fontSize: '17px', fontWeight: 600, margin: 0, lineHeight: 1.3 }}>
-            {resultado.siguientePaso}
-          </p>
-        </div>
+          <div style={{ background: '#f0f0f0', padding: '20px', borderRadius: '10px', marginBottom: '30px' }}>
+            <p style={{ fontSize: '14px', color: '#999', marginBottom: '10px' }}>Tu próximo paso</p>
+            <p style={{ fontSize: '18px', color: '#3d6d3f', fontWeight: 'bold' }}>
+              {resultado.categoría === 'Riesgo Metabólico Elevado' 
+                ? 'Seguimiento médico y nutricional especializado'
+                : resultado.etiqueta === 'Prospecto_Formulario_VSL'
+                ? 'Iniciar un proceso de reversión'
+                : 'Ebook gratuito + Training "Domina tu Glucosa" (10 días)'}
+            </p>
+          </div>
 
-        {resultado.acción === 'vsl' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <a href="https://www.somosplantpowered.com/vsl-piad" style={{
-              display: 'block',
-              background: '#3d6d3f',
-              color: 'white',
-              padding: '18px 24px',
-              borderRadius: '10px',
-              textDecoration: 'none',
-              fontWeight: 600,
-              fontSize: '16px',
-              textAlign: 'center',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.3s'
-            }} onMouseOver={(e) => e.target.style.background = '#2d5a30'} onMouseOut={(e) => e.target.style.background = '#3d6d3f'}>
-              Ver Metodología de Reversión →
+          {resultado.ctaUrl && (
+            
+              href={resultado.ctaUrl}
+              style={{
+                display: 'inline-block',
+                background: '#3d6d3f',
+                color: 'white',
+                padding: '14px 28px',
+                borderRadius: '10px',
+                textDecoration: 'none',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                marginBottom: '20px',
+                transition: 'background 0.2s'
+              }}
+              onMouseEnter={(e) => e.target.style.background = '#2d5a30'}
+              onMouseLeave={(e) => e.target.style.background = '#3d6d3f'}
+            >
+              {resultado.cta} →
             </a>
-            <p style={{ color: '#999', fontSize: '14px', textAlign: 'center', margin: 0 }}>
-              Recibirás un email con todos los detalles
-            </p>
-          </div>
-        )}
+          )}
 
-        {resultado.acción === 'free' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <button style={{
-              background: '#3d6d3f',
-              color: 'white',
-              padding: '18px 24px',
-              borderRadius: '10px',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '16px',
-              transition: 'all 0.3s'
-            }} onMouseOver={(e) => e.target.style.background = '#2d5a30'} onMouseOut={(e) => e.target.style.background = '#3d6d3f'}>
-              Descargar Ebook Gratuito →
-            </button>
-            <p style={{ color: '#999', fontSize: '14px', textAlign: 'center', margin: 0 }}>
-              + Acceso al training "Domina tu Glucosa" (10 días)
-            </p>
-          </div>
-        )}
-
-        {resultado.acción === 'medical' && (
-          <div style={{ background: 'rgba(216, 90, 48, 0.08)', border: '2px solid #D85A30', padding: '1.75rem', borderRadius: '12px', textAlign: 'center' }}>
-            <p style={{ color: '#333', fontSize: '16px', lineHeight: 1.7, margin: 0, fontWeight: 500 }}>
-              <strong>Te recomendamos trabajar con un médico especialista y nutricionista</strong> para un seguimiento cercano y personalizado.
-            </p>
-          </div>
-        )}
+          <p style={{ fontSize: '14px', color: '#999', marginTop: '20px' }}>
+            Nos pondremos en contacto en las próximas 24 horas para acompañarte en tu proceso.
+          </p>
+        </div>
       </div>
     );
   }
 
-  const steps = [
-    {
-      title: 'Información General',
-      fields: ['nombre', 'correo', 'instagram', 'país']
-    },
-    {
-      title: '¿Qué edad tienes?',
-      field: 'edad',
-      options: [
-        { label: 'Menos de 40', value: '<40' },
-        { label: '40–55', value: '40-55' },
-        { label: '56–70', value: '56-70' },
-        { label: 'Más de 70', value: '>70' }
-      ]
-    },
-    {
-      title: '¿Cuál es tu diagnóstico actual?',
-      field: 'diagnóstico',
-      options: [
-        { label: 'Resistencia a la insulina', value: 'Resistencia' },
-        { label: 'Prediabetes', value: 'Prediabetes' },
-        { label: 'Diabetes tipo 2', value: 'Diabetes2' },
-        { label: 'No estoy seguro(a)', value: 'NoSeguro' }
-      ]
-    },
-    {
-      title: '¿Hace cuánto tiempo recibiste tu diagnóstico?',
-      field: 'tiempodiagnóstico',
-      options: [
-        { label: 'Menos de 1 año', value: '<1' },
-        { label: 'Entre 1 y 5 años', value: '1-5' },
-        { label: 'Más de 5 años', value: '>5' },
-        { label: 'No tengo diagnóstico confirmado', value: 'NoConfirmado' }
-      ]
-    },
-    {
-      title: '¿Cuál fue tu última hemoglobina glicosilada (HbA1c)?',
-      field: 'hba1c',
-      options: [
-        { label: 'Menos de 5.7%', value: '<5.7' },
-        { label: '5.7–6.4%', value: '5.7-6.4' },
-        { label: '6.5–7.0%', value: '6.5-7.0' },
-        { label: 'Más de 7.0%', value: '>7.0' },
-        { label: 'No lo sé', value: 'NoSé' }
-      ]
-    },
-    {
-      title: '¿Utilizas actualmente alguno de los siguientes?',
-      field: 'medicamentos',
-      options: [
-        { label: 'Ningún medicamento', value: 'Ninguno' },
-        { label: '1 medicamento oral', value: '1Oral' },
-        { label: '2 o más medicamentos orales', value: '2Orales' },
-        { label: 'Insulina inyectada', value: 'Insulina' }
-      ]
-    },
-    {
-      title: '¿Cómo te sientes respecto a tu salud actualmente?',
-      field: 'emoción',
-      options: [
-        { label: 'Tranquilo(a), pero quiero prevenir problemas futuros', value: 'Tranquilo' },
-        { label: 'Preocupado(a), siento que necesito actuar pronto', value: 'Preocupado' },
-        { label: 'Frustrado(a), he intentado muchas cosas sin éxito', value: 'Frustrado' },
-        { label: 'Abrumado(a), siento que estoy perdiendo el control', value: 'Abrumado' }
-      ]
-    },
-    {
-      title: '¿Qué es lo que MÁS te preocupa si esta condición sigue avanzando?',
-      field: 'preocupación',
-      options: [
-        { label: 'Seguir aumentando medicamentos', value: 'Medicamentos' },
-        { label: 'Tener que usar insulina', value: 'Insulina' },
-        { label: 'Desarrollar complicaciones de la enfermedad', value: 'Complicaciones' },
-        { label: 'Perder calidad de vida', value: 'Calidad' },
-        { label: 'No poder disfrutar plenamente de mi familia y mi futuro', value: 'Familia' }
-      ]
-    },
-    {
-      title: '¿Qué es lo que MÁS te gustaría lograr?',
-      field: 'objetivo',
-      options: [
-        { label: 'Reducir medicamentos', value: 'Reducir' },
-        { label: 'Bajar mi glucosa', value: 'Glucosa' },
-        { label: 'Tener más energía', value: 'Energía' },
-        { label: 'Perder peso', value: 'Peso' },
-        { label: 'Revertir mi condición', value: 'Revertir' }
-      ]
-    },
-    {
-      title: '¿Qué tan comprometido(a) estás con transformar tu salud?',
-      field: 'compromiso',
-      options: [
-        { label: 'Estoy listo(a) para hacer cambios importantes', value: 'Listo' },
-        { label: 'Aún tengo dudas', value: 'Dudas' },
-        { label: 'Solo estoy explorando opciones', value: 'Explorando' }
-      ]
-    },
-    {
-      title: 'Si tuvieras la certeza de que puedes revertir tu condición, ¿cuál presupuesto destinarías?',
-      field: 'presupuesto',
-      options: [
-        { label: 'No podría invertir en este momento', value: 'NoPodría' },
-        { label: '$1,000 - $2,500 USD', value: '$1-2.5k' },
-        { label: '$2,501 - $5,000 USD', value: '$2.5-5k' },
-        { label: '$5,001 - $10,000 USD', value: '$5-10k' },
-        { label: 'Más de $10,000 USD', value: '>$10k' }
-      ]
-    }
-  ];
-
-  const currentStep = steps[step];
-  const progress = Math.round((step / steps.length) * 100);
-
   return (
-    <div style={{ 
-      padding: '1.5rem', 
-      maxWidth: '640px', 
-      margin: '0 auto', 
-      fontFamily: 'system-ui, -apple-system, sans-serif',
-      backgroundColor: '#ffffff',
-      minHeight: '100vh'
-    }}>
-      <div style={{ marginBottom: '2.5rem' }}>
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem', paddingTop: '1rem' }}>
-          <img 
-            src="https://i.imgur.com/JQFiMig.png" 
-            alt="Somos Plant Powered" 
-            style={{ height: '60px', objectFit: 'contain', marginBottom: '1.5rem' }}
-          />
-        </div>
-
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '26px', fontWeight: 600, marginBottom: '1rem', color: '#333', lineHeight: 1.3 }}>
-            Calcula tu pronóstico de reversión
-          </h1>
-          <p style={{ fontSize: '16px', color: '#666', lineHeight: 1.7, margin: 0 }}>
+    <div style={{ minHeight: '100vh', background: '#f9f9f9', padding: '20px' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '40px', marginTop: '30px' }}>
+          <img src="https://i.imgur.com/JQFiMig.png" alt="Somos Plant Powered" style={{ maxWidth: '150px', marginBottom: '20px' }} />
+          <h1 style={{ fontSize: '28px', color: '#1a1a1a', marginBottom: '10px' }}>Calcula tu pronóstico de reversión</h1>
+          <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.6' }}>
             Responde este breve formulario y descubre qué tan cerca podrías estar de revertir tu resistencia a la insulina, prediabetes o diabetes tipo 2.
           </p>
         </div>
 
-        {/* Step Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 600, margin: 0, color: '#333', flex: 1, lineHeight: 1.3 }}>
-            {currentStep.title}
+        <div style={{ marginBottom: '30px', textAlign: 'right', fontSize: '14px', color: '#999' }}>
+          {step + 1}/11
+        </div>
+
+        <div style={{ background: 'white', borderRadius: '20px', padding: '30px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+          <h2 style={{ fontSize: '18px', color: '#1a1a1a', marginBottom: '20px', fontWeight: 'bold' }}>
+            {step === 0 && 'Información General'}
+            {step === 1 && '¿Cuál es tu edad?'}
+            {step === 2 && '¿Cuál es tu diagnóstico?'}
+            {step === 3 && '¿Cuánto tiempo llevas con este diagnóstico?'}
+            {step === 4 && '¿Cuál es tu HbA1c?'}
+            {step === 5 && '¿Qué medicamentos tomas?'}
+            {step === 6 && '¿Cómo te sientes emocionalmente?'}
+            {step === 7 && '¿Qué te preocupa más?'}
+            {step === 8 && '¿Cuál es tu objetivo principal?'}
+            {step === 9 && '¿Qué tan listo/a estás?'}
+            {step === 10 && '¿Cuál es tu capacidad de inversión?'}
           </h2>
-          <span style={{ fontSize: '14px', color: '#999', whiteSpace: 'nowrap', marginLeft: '1rem' }}>
-            {step + 1}/{steps.length}
-          </span>
-        </div>
 
-        {/* Progress Bar */}
-        <div style={{ height: '8px', background: '#f0f0f0', borderRadius: '4px', overflow: 'hidden', marginBottom: '2rem' }}>
-          <div style={{ 
-            height: '100%', 
-            background: '#3d6d3f', 
-            width: `${progress}%`, 
-            transition: 'width 0.3s ease'
-          }}></div>
-        </div>
-      </div>
-
-      {/* Form Content */}
-      <div style={{ marginBottom: '2rem' }}>
-        {step === 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <input
-              type="text"
-              placeholder="Tu nombre completo"
-              value={formData.nombre}
-              onChange={(e) => updateForm('nombre', e.target.value)}
-              style={{ 
-                padding: '16px 14px', 
-                borderRadius: '10px', 
-                border: '2px solid #ddd', 
-                fontSize: '16px',
-                fontFamily: 'inherit',
-                transition: 'border-color 0.2s'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
-              onBlur={(e) => e.target.style.borderColor = '#ddd'}
-            />
-            <input
-              type="email"
-              placeholder="Tu correo"
-              value={formData.correo}
-              onChange={(e) => updateForm('correo', e.target.value)}
-              style={{ 
-                padding: '16px 14px', 
-                borderRadius: '10px', 
-                border: '2px solid #ddd', 
-                fontSize: '16px',
-                fontFamily: 'inherit',
-                transition: 'border-color 0.2s'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
-              onBlur={(e) => e.target.style.borderColor = '#ddd'}
-            />
-            <input
-              type="text"
-              placeholder="Tu usuario de Instagram (sin @)"
-              value={formData.instagram}
-              onChange={(e) => updateForm('instagram', e.target.value)}
-              style={{ 
-                padding: '16px 14px', 
-                borderRadius: '10px', 
-                border: '2px solid #ddd', 
-                fontSize: '16px',
-                fontFamily: 'inherit',
-                transition: 'border-color 0.2s'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
-              onBlur={(e) => e.target.style.borderColor = '#ddd'}
-            />
-            <input
-              type="text"
+          {step === 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <input
-  type="text"
-  placeholder="WhatsApp (+código país y número)"
-  value={formData.whatsapp}
-  onChange={(e) => updateForm('whatsapp', e.target.value)}
-  style={{ 
-    padding: '16px 14px', 
-    borderRadius: '10px', 
-    border: '2px solid #ddd', 
-    fontSize: '16px',
-    fontFamily: 'inherit',
-    transition: 'border-color 0.2s'
-  }}
-  onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
-  onBlur={(e) => e.target.style.borderColor = '#ddd'}
-/>
-              placeholder="País de residencia"
-              value={formData.país}
-              onChange={(e) => updateForm('país', e.target.value)}
-              style={{ 
-                padding: '16px 14px', 
-                borderRadius: '10px', 
-                border: '2px solid #ddd', 
-                fontSize: '16px',
-                fontFamily: 'inherit',
-                transition: 'border-color 0.2s'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
-              onBlur={(e) => e.target.style.borderColor = '#ddd'}
-            />
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {currentStep.options?.map((option) => (
-              <label
-                key={option.value}
-                style={{
-                  padding: '16px 16px',
-                  border: formData[currentStep.field] === option.value ? '2px solid #3d6d3f' : '2px solid #e0e0e0',
-                  borderRadius: '10px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '14px',
-                  background: formData[currentStep.field] === option.value ? 'rgba(61, 109, 63, 0.05)' : '#ffffff',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <input
-                  type="radio"
-                  name={currentStep.field}
-                  value={option.value}
-                  checked={formData[currentStep.field] === option.value}
-                  onChange={() => updateForm(currentStep.field, option.value)}
-                  style={{ cursor: 'pointer', marginTop: '4px', width: '20px', height: '20px' }}
-                />
-                <span style={{ color: '#333', fontSize: '16px', fontWeight: 500, lineHeight: 1.4 }}>
-                  {option.label}
-                </span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
+                type="text"
+                placeholder="Tu nombre completo"
+                value={formData.nombre}
+                onChange={(e) => updateForm('nombre', e.target.value)}
+                style={{ padding: '16px 14px', borderRadius: '10px', border: '2px solid #ddd', fontSize: '16px', fontFamily: 'inherit', transition: 'border-color 0.2s' }}
+                onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
+                onBlur={(e) => e.target.style.borderColor = '#ddd'}
+              />
+              <input
+                type="email"
+                placeholder="Tu correo"
+                value={formData.correo}
+                onChange={(e) => updateForm('correo', e.target.value)}
+                style={{ padding: '16px 14px', borderRadius: '10px', border: '2px solid #ddd', fontSize: '16px', fontFamily: 'inherit', transition: 'border-color 0.2s' }}
+                onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
+                onBlur={(e) => e.target.style.borderColor = '#ddd'}
+              />
+              <input
+                type="text"
+                placeholder="Tu usuario de Instagram (sin @)"
+                value={formData.instagram}
+                onChange={(e) => updateForm('instagram', e.target.value)}
+                style={{ padding: '16px 14px', borderRadius: '10px', border: '2px solid #ddd', fontSize: '16px', fontFamily: 'inherit', transition: 'border-color 0.2s' }}
+                onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
+                onBlur={(e) => e.target.style.borderColor = '#ddd'}
+              />
+              <input
+                type="text"
+                placeholder="WhatsApp (+código país y número)"
+                value={formData.whatsapp}
+                onChange={(e) => updateForm('whatsapp', e.target.value)}
+                style={{ padding: '16px 14px', borderRadius: '10px', border: '2px solid #ddd', fontSize: '16px', fontFamily: 'inherit', transition: 'border-color 0.2s' }}
+                onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
+                onBlur={(e) => e.target.style.borderColor = '#ddd'}
+              />
+              <input
+                type="text"
+                placeholder="País de residencia"
+                value={formData.país}
+                onChange={(e) => updateForm('país', e.target.value)}
+                style={{ padding: '16px 14px', borderRadius: '10px', border: '2px solid #ddd', fontSize: '16px', fontFamily: 'inherit', transition: 'border-color 0.2s' }}
+                onFocus={(e) => e.target.style.borderColor = '#3d6d3f'}
+                onBlur={(e) => e.target.style.borderColor = '#ddd'}
+              />
+            </div>
+          )}
 
-      {/* Buttons */}
-      <div style={{ display: 'flex', gap: '12px', justifyContent: 'space-between' }}>
-        <button
-          onClick={handlePrev}
-          disabled={step === 0}
-          style={{
-            padding: '16px 20px',
-            border: '2px solid #ddd',
-            background: step === 0 ? '#f5f5f5' : '#ffffff',
-            color: '#333',
-            borderRadius: '10px',
-            cursor: step === 0 ? 'not-allowed' : 'pointer',
-            opacity: step === 0 ? 0.5 : 1,
-            fontSize: '16px',
-            fontWeight: 600,
-            transition: 'all 0.2s',
-            flex: 1
-          }}
-          onMouseOver={(e) => !step === 0 && (e.target.style.background = '#f8f8f8')}
-          onMouseOut={(e) => e.target.style.background = step === 0 ? '#f5f5f5' : '#ffffff'}
-        >
-          Atrás
-        </button>
-        <button
-          onClick={handleNext}
-          disabled={loading || (step === 0 && (!formData.nombre || !formData.correo)) || (step > 0 && !formData[currentStep?.field])}
-          style={{
-            padding: '16px 20px',
-            border: 'none',
-            background: '#3d6d3f',
-            color: 'white',
-            borderRadius: '10px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            fontWeight: 600,
-            opacity: (loading || (step === 0 && (!formData.nombre || !formData.correo)) || (step > 0 && !formData[currentStep?.field])) ? 0.6 : 1,
-            transition: 'all 0.2s',
-            flex: 1
-          }}
-          onMouseOver={(e) => !loading && (e.target.style.background = '#2d5a30')}
-          onMouseOut={(e) => e.target.style.background = '#3d6d3f'}
-        >
-          {loading ? 'Procesando...' : step === steps.length - 1 ? 'Ver Resultado' : 'Siguiente'}
-        </button>
+          {step === 1 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {['<40', '40-55', '56-70', '>70'].map(opt => (
+                <button
+                  key={opt}
+                  onClick={() => updateForm('edad', opt)}
+                  style={{
+                    padding: '14px',
+                    border: formData.edad === opt ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.edad === opt ? '#3d6d3f' : 'white',
+                    color: formData.edad === opt ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 2 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: 'Resistencia', label: 'Resistencia a la insulina' },
+                { val: 'Prediabetes', label: 'Prediabetes' },
+                { val: 'Diabetes2', label: 'Diabetes tipo 2' },
+                { val: 'NoSeguro', label: 'No estoy seguro' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('diagnóstico', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.diagnóstico === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.diagnóstico === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.diagnóstico === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 3 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: '<1año', label: 'Menos de 1 año' },
+                { val: '1-5años', label: '1 a 5 años' },
+                { val: '>5años', label: 'Más de 5 años' },
+                { val: 'NoConfirmado', label: 'No confirmado aún' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('tiempodiagnóstico', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.tiempodiagnóstico === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.tiempodiagnóstico === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.tiempodiagnóstico === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 4 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: '<5.7', label: 'Menos de 5.7%' },
+                { val: '5.7-6.4', label: '5.7% - 6.4%' },
+                { val: '6.5-7.0', label: '6.5% - 7.0%' },
+                { val: '>7.0', label: 'Mayor a 7.0%' },
+                { val: 'NoSé', label: 'No sé mi HbA1c' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('hba1c', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.hba1c === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.hba1c === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.hba1c === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 5 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: 'Ninguno', label: 'Ninguno' },
+                { val: '1oral', label: '1 medicamento oral' },
+                { val: '2+orales', label: '2 o más medicamentos orales' },
+                { val: 'Insulina', label: 'Insulina inyectada' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('medicamentos', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.medicamentos === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.medicamentos === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.medicamentos === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 6 && (
+            <input
+              type="text"
+              placeholder="¿Cómo te sientes? (ej: asustado, motivado, confundido)"
+              value={formData.emoción}
+              onChange={(e) => updateForm('emoción', e.target.value)}
+              style={{ padding: '16px 14px', borderRadius: '10px', border: '2px solid #ddd', fontSize: '16px', fontFamily: 'inherit', width: '100%', boxSizing: 'border-box' }}
+            />
+          )}
+
+          {step === 7 && (
+            <input
+              type="text"
+              placeholder="¿Qué te preocupa más? (ej: complicaciones, cambio de estilo de vida)"
+              value={formData.preocupación}
+              onChange={(e) => updateForm('preocupación', e.target.value)}
+              style={{ padding: '16px 14px', borderRadius: '10px', border: '2px solid #ddd', fontSize: '16px', fontFamily: 'inherit', width: '100%', boxSizing: 'border-box' }}
+            />
+          )}
+
+          {step === 8 && (
+            <input
+              type="text"
+              placeholder="¿Cuál es tu objetivo? (ej: normalizar glucosa, dejar medicinas)"
+              value={formData.objetivo}
+              onChange={(e) => updateForm('objetivo', e.target.value)}
+              style={{ padding: '16px 14px', borderRadius: '10px', border: '2px solid #ddd', fontSize: '16px', fontFamily: 'inherit', width: '100%', boxSizing: 'border-box' }}
+            />
+          )}
+
+          {step === 9 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: 'Listo', label: 'Sí, estoy listo/a para cambiar' },
+                { val: 'Dudas', label: 'Tengo dudas, pero quiero intentar' },
+                { val: 'Explorando', label: 'Aún estoy explorando opciones' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('compromiso', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.compromiso === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.compromiso === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.compromiso === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 10 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: 'NoPodría', label: 'No podría invertir ahora' },
+                { val: '$1-2.5k', label: '$1,000 - $2,500' },
+                { val: '$2.5-5k', label: '$2,500 - $5,000' },
+                { val: '$5-10k', label: '$5,000 - $10,000' },
+                { val: '>$10k', label: 'Más de $10,000' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('presupuesto', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.presupuesto === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.presupuesto === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.presupuesto === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: '12px', marginTop: '30px' }}>
+            <button
+              onClick={handlePrev}
+              disabled={step === 0}
+              style={{
+                flex: 1,
+                padding: '14px',
+                border: '2px solid #ddd',
+                background: step === 0 ? '#f0f0f0' : 'white',
+                color: step === 0 ? '#ccc' : '#1a1a1a',
+                borderRadius: '10px',
+                cursor: step === 0 ? 'not-allowed' : 'pointer',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                transition: 'all 0.2s'
+              }}
+            >
+              Atrás
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={loading}
+              style={{
+                flex: 1,
+                padding: '14px',
+                border: 'none',
+                background: loading ? '#ccc' : '#3d6d3f',
+                color: 'white',
+                borderRadius: '10px',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => !loading && (e.target.style.background = '#2d5a30')}
+              onMouseLeave={(e) => !loading && (e.target.style.background = '#3d6d3f')}
+            >
+              {step === 10 ? 'Ver Resultado' : 'Siguiente'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
