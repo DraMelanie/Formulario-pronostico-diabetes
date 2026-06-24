@@ -165,7 +165,21 @@ export default function ReversalQuiz() {
       return true;
     }
   };
+const handleNext = async () => {
+    if (step === 10) {
+      setLoading(true);
+      await enviarASysteme();
+      const segmento = getSegmento();
+      setResultado(segmento);
+      setLoading(false);
+    } else {
+      setStep(step + 1);
+    }
+  };
 
+  const handlePrev = () => {
+    if (step > 0) setStep(step - 1);
+  };
   if (resultado) {
     return (
       <div style={{ minHeight: '100vh', background: '#f9f9f9', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
