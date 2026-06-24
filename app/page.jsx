@@ -7,6 +7,7 @@ export default function ReversalQuiz() {
   const [formData, setFormData] = useState({
     nombre: '',
     correo: '',
+    whatsapp: '',
     instagram: '',
     país: '',
     edad: null,
@@ -127,22 +128,33 @@ export default function ReversalQuiz() {
   }, [formData, calcularScore]);
 
   const enviarASysteme = async () => {
-    try {
-      const segmento = getSegmento();
+  try {
+    const segmento = getSegmento();
 
-      const payload = {
-        correo: formData.correo,
-        nombre: formData.nombre,
-        instagram: formData.instagram,
-        país: formData.país,
-        edad: formData.edad,
-        diagnóstico: formData.diagnóstico,
-        score: segmento.score,
-        categoría: segmento.categoría,
-        emoción: formData.emoción,
-        presupuesto: formData.presupuesto,
-        etiqueta: segmento.etiqueta
-      };
+    const payload = {
+      nombre: formData.nombre,
+      correo: formData.correo,
+      whatsapp: formData.whatsapp,
+      instagram: formData.instagram,
+      país: formData.país,
+      score: segmento.score,
+      categoría: segmento.categoría,
+      etiqueta: segmento.etiqueta,
+      emoción: formData.emoción,
+      presupuesto: formData.presupuesto
+    };
+
+    const response = await fetch('https://script.google.com/macros/s/AKfycbyKqMdOp87yjc1ORqopG-o2U60VDbyVbqnIUjV8tmOZKHZziILdUaZuKk9YD7xsxcHZGQ/exec', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Error:', error);
+    return true;
+  }
+};
 
       const response = await fetch('/api/send-lead', {
         method: 'POST',
