@@ -282,7 +282,6 @@ const handleNext = async () => {
             </div>
           )}
 
-          {step === 6 &&
             {step === 6 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {[
