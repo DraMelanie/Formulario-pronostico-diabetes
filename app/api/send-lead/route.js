@@ -25,7 +25,7 @@ export async function POST(request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer xu6nsy7sfz9qzzrxjbrc00xe306rgb3p0x63b6geqtokeyfv9s6g9m6a9k6tzw0s`
+        'Authorization': `rfnqf98pj98b7wqz2xp8zr1qctjh7kaxkvfkp5g3sq3ahagu5lmjs9864cvsh7cq`
       },
       body: JSON.stringify(payload)
     });
