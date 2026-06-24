@@ -166,35 +166,17 @@ export default function ReversalQuiz() {
     }
   };
 
-  const handleNext = async () => {
-    if (step === 10) {
-      setLoading(true);
-      await enviarASysteme();
-      const segmento = getSegmento();
-      setResultado(segmento);
-      setLoading(false);
-    } else {
-      setStep(step + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (step > 0) setStep(step - 1);
-  };
   if (resultado) {
     return (
       <div style={{ minHeight: '100vh', background: '#f9f9f9', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
         <div style={{ maxWidth: '600px', width: '100%', background: 'white', borderRadius: '20px', padding: '40px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', textAlign: 'center' }}>
           <img src="https://i.imgur.com/JQFiMig.png" alt="Somos Plant Powered" style={{ maxWidth: '200px', marginBottom: '30px' }} />
-          
           <h1 style={{ fontSize: '28px', color: '#1a1a1a', marginBottom: '20px' }}>
             {resultado.mensaje}
           </h1>
-          
           <p style={{ fontSize: '16px', color: '#666', marginBottom: '30px', lineHeight: '1.6' }}>
             {resultado.detalle}
           </p>
-
           <div style={{ background: '#f0f0f0', padding: '20px', borderRadius: '10px', marginBottom: '30px' }}>
             <p style={{ fontSize: '14px', color: '#999', marginBottom: '10px' }}>Tu próximo paso</p>
             <p style={{ fontSize: '18px', color: '#3d6d3f', fontWeight: 'bold' }}>
@@ -205,7 +187,6 @@ export default function ReversalQuiz() {
                 : 'Ebook gratuito + Training "Domina tu Glucosa" (10 días)'}
             </p>
           </div>
-
           {resultado.ctaUrl && (
             
               href={resultado.ctaUrl}
@@ -227,7 +208,6 @@ export default function ReversalQuiz() {
               {resultado.cta} →
             </a>
           )}
-
           <p style={{ fontSize: '14px', color: '#999', marginTop: '20px' }}>
             Nos pondremos en contacto en las próximas 24 horas para acompañarte en tu proceso.
           </p>
