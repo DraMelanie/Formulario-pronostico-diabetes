@@ -21,7 +21,7 @@ export async function POST(request) {
       tags: data.etiqueta || ""
     };
 
-    const response = await fetch('https://systeme.io/api/v1/contacts', {
+    const response = await fetch('https://api.systeme.io/api/contacts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
