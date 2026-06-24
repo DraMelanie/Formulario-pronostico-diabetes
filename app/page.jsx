@@ -371,10 +371,35 @@ const handleNext = async () => {
             </div>
           )}
 
-          {step === 9 &&
-            {step === 9 && '¿Qué tan listo/a estás?'}
-            {step === 10 && '¿Cuál es tu capacidad de inversión?'}
-          </h2>
+          {step === 9 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { val: 'Listo', label: 'Sí, estoy listo/a para cambiar' },
+                { val: 'Dudas', label: 'Tengo dudas, pero quiero intentar' },
+                { val: 'Explorando', label: 'Aún estoy explorando opciones' }
+              ].map(opt => (
+                <button
+                  key={opt.val}
+                  onClick={() => updateForm('compromiso', opt.val)}
+                  style={{
+                    padding: '14px',
+                    border: formData.compromiso === opt.val ? '2px solid #3d6d3f' : '2px solid #ddd',
+                    background: formData.compromiso === opt.val ? '#3d6d3f' : 'white',
+                    color: formData.compromiso === opt.val ? 'white' : '#1a1a1a',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {step === 10 &&
 
           {step === 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
